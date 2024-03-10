@@ -7,19 +7,6 @@
 
 import SwiftUI
 
-struct pressableButtonInterruptable: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .frame(width: 120, height: 120)
-            .background(
-                RoundedRectangle(cornerRadius: 60.0)
-                    .opacity(configuration.isPressed ? 0.5 : 0)
-                    .scaleEffect(configuration.isPressed ? 0.86 : 1.0)
-                    .animation(.easeInOut(duration: 0.22), value: configuration.isPressed)
-            )
-    }
-}
-
 struct pressableButtonUninterruptable: ButtonStyle {
     @State var isPressed: Bool = false
     
@@ -38,7 +25,9 @@ struct pressableButtonUninterruptable: ButtonStyle {
                     withAnimation(.snappy(duration: 0.22)) {
                         isPressed.toggle()
                     } completion: {
-                        isPressed.toggle()
+                        withAnimation(.snappy(duration: 0.22)) {
+                            isPressed.toggle()
+                        }
                     }
                 }
             })
