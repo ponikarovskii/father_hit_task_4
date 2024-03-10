@@ -1,21 +1,92 @@
 //
 //  ContentView.swift
-//  father_hit_task_4
+//  father_hit_task_3
 //
 //  Created by Антон Поникаровский on 10.03.2024.
 //
 
 import SwiftUI
 
-struct ContentView: View {
+struct pressableButtonInterruptable: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .frame(width: 120, height: 120)
+            .background(
+                RoundedRectangle(cornerRadius: 60.0)
+                    .opacity(configuration.isPressed ? 0.5 : 0)
+                    .scaleEffect(configuration.isPressed ? 0.86 : 1.0)
+                    .animation(.easeInOut(duration: 0.22), value: configuration.isPressed)
+            )
+    }
+}
+
+struct pressableButtonUninterruptable: ButtonStyle {
+    @State var isPressed: Bool = false
+    
+    func makeBody(configuration: Configuration) -> some View {
+        
+        configuration.label
+            .frame(width: 120, height: 120)
+            .background(
+                RoundedRectangle(cornerRadius: 60.0)
+                    .opacity(isPressed ? 0.2 : 0)
+                    .scaleEffect(isPressed ? 0.86 : 1.0)
+                    .animation(.easeInOut(duration: 0.22), value: isPressed)
+            )
+            .onChange(of: configuration.isPressed, {
+                if configuration.isPressed {
+                    withAnimation(.easeInOut(duration: 0.22)) {
+                        isPressed.toggle()
+                    } completion: {
+                        isPressed.toggle()
+                    }
+                }
+            })
+    }
+}
+
+struct playNextButton: View {
+    @State var isAnimated: Bool = false
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        Button {
+            withAnimation(.snappy(duration: 0.22, extraBounce: 0.3)) {
+                isAnimated.toggle()
+            } completion: {
+                isAnimated.toggle()
+            }
+        } label: {
+            HStack(alignment: .center, spacing: 0) {
+                Image(systemName: "arrowtriangle.forward.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: isAnimated ? 40 : 0)
+                    .opacity(isAnimated ? 1 : 0)
+                Image(systemName: "arrowtriangle.forward.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 40)
+                Image(systemName: "arrowtriangle.forward.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: isAnimated ? 0 : 40)
+                    .opacity(isAnimated ? 0 : 1)
+            }
         }
-        .padding()
+    }
+}
+
+struct ContentView: View {
+    @State var isAnimated: Bool = false
+    
+    var body: some View {
+        HStack (alignment: .center, spacing: 20) {
+            playNextButton()
+                .buttonStyle(pressableButtonInterruptable())
+            playNextButton()
+                .buttonStyle(pressableButtonUninterruptable())
+
+        }
     }
 }
 
