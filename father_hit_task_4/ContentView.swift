@@ -29,13 +29,13 @@ struct pressableButtonUninterruptable: ButtonStyle {
             .frame(width: 120, height: 120)
             .background(
                 RoundedRectangle(cornerRadius: 60.0)
-                    .opacity(isPressed ? 0.2 : 0)
-                    .scaleEffect(isPressed ? 0.86 : 1.0)
-                    .animation(.easeInOut(duration: 0.22), value: isPressed)
+                    .opacity(isPressed ? 0.1 : 0)
+                    .animation(.snappy(duration: 0.22), value: isPressed)
             )
+            .scaleEffect(isPressed ? 0.86 : 1.0)
             .onChange(of: configuration.isPressed, {
                 if configuration.isPressed {
-                    withAnimation(.easeInOut(duration: 0.22)) {
+                    withAnimation(.snappy(duration: 0.22)) {
                         isPressed.toggle()
                     } completion: {
                         isPressed.toggle()
@@ -50,7 +50,7 @@ struct playNextButton: View {
     
     var body: some View {
         Button {
-            withAnimation(.snappy(duration: 0.22, extraBounce: 0.3)) {
+            withAnimation(.snappy(duration: 0.44, extraBounce: 0.3)) {
                 isAnimated.toggle()
             } completion: {
                 isAnimated.toggle()
@@ -81,8 +81,6 @@ struct ContentView: View {
     
     var body: some View {
         HStack (alignment: .center, spacing: 20) {
-            playNextButton()
-                .buttonStyle(pressableButtonInterruptable())
             playNextButton()
                 .buttonStyle(pressableButtonUninterruptable())
 
